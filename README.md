@@ -1,6 +1,6 @@
 # BMS Archive
 
-BMS archive service, powered by HYEA.
+BMS archive service, powered by [HYEA](http://www.dream-pro.info/~lavalse/LR2IR/search.cgi?mode=mypage&playerid=153937).
 
 # Functionallity 
 
