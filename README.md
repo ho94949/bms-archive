@@ -19,7 +19,9 @@ BMS archive service, powered by HYEA.
 # Supported Song Table
 
 Available means every sabun is supported.
-Planned means we have plan that every sabun on the table will be supported
+
+Planned means we have plan that every sabun on the table will be supported.
+
 Paused means we tried to gather sabun but failed on some and project was paused.
 
 ## Available
