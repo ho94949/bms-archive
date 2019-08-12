@@ -11,8 +11,9 @@ BMS archive service, powered by [HYEA](http://www.dream-pro.info/~lavalse/LR2IR/
 
 ## Plan
 
-- Runs without any dependency such as python (High priority)
+- Running without any dependency such as python (High priority)
 - Supporting GUI (High priority)
+- Rename folder as song name (High priority)
 - Supporting Automatic Update & Deletion of BMS songs when certain song is updated (Normal priority)
 - Supporting File sending system when new sabun or song is found (Low priority)
 
