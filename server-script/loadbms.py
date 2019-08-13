@@ -31,7 +31,9 @@ def GuessKey(keyList):
 
     keyList = list(map(RemoveImplicitSubtitle, keyList))
 
-    if(all(x == keyList[0] for x in keyList)):
+    keyList.sort(key=len)
+
+    if(all(x.startswith(keyList[0]) for x in keyList)):
         return keyList[0]
 
     return "N/A_" + keyList[0]
