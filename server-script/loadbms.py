@@ -21,7 +21,7 @@ def GuessKey(keyList):
 
         for s, e in sublist:
             if title[-1] == e:
-                ind = title.rfind(s[:-1])
+                ind = title[:-1].rfind(s)
                 if ind == -1:
                     return title.strip()
                 else:
