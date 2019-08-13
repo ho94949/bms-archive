@@ -1,0 +1,4 @@
+ZIP_FOLDER_NAME = 'zip'
+EXTRACT_FOLDER_NAME = 'extract'
+JSON_FOLDER_NAME = 'json'
+NEW_FOLDER_NAME = 'new'
