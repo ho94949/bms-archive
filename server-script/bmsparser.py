@@ -11,7 +11,7 @@ class BMS:
 
     @classmethod
     def AutoDecode(cls, raw):
-        EncodingList = ['shift-jis', 'utf-8', 'cp949']
+        EncodingList = ['shift-jis', 'cp932', 'shift_jisx0213', 'utf-8', 'cp949']
         for e in EncodingList:
             try:
                 ret = raw.decode(e)
