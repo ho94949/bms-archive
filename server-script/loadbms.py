@@ -5,7 +5,7 @@ import zipfile
 import re
 import hashlib
 import json
-
+import shutil
 
 from bmsutil import *
 from config import *
@@ -100,6 +100,56 @@ def LoadNewBMS():
                 traceback.print_exc()
 
 
+def RemoveDuplicate(BMS2ZIP, ZIP2BMS):
+    """Returns true if file is deleted."""
+
+    ret = False
+
+    def RemoveFile(k):
+        try:
+            ret = True
+            os.remove(os.path.join(ZIP_FOLDER_NAME, k + '.zip'))
+            os.remove(os.path.join(JSON_FOLDER_NAME, k + '.json'))
+            shutil.rmtree(os.path.join(EXTRACT_FOLDER_NAME, k))
+            ZIP2BMS.pop(k, None)
+            print('Deleted ' + k)
+        except Exception:
+            traceback.print_exc()
+
+    def CheckDuplicate(z1, z2):
+
+        # already removed by duplication
+        if z1 not in ZIP2BMS or z2 not in ZIP2BMS:
+            return
+
+        Files1 = list(map(lambda s: s['md5'], ZIP2BMS[z1]['bms']))
+        Files2 = list(map(lambda s: s['md5'], ZIP2BMS[z2]['bms']))
+
+        delFlag = True
+
+        # We want to delete z2
+        if len(Files1) < len(Files2):
+            Files1, Files2 = Files2, Files1
+
+        if len(Files1) > len(Files2):
+            for h in Files2:
+                if h not in Files1:
+                    delFlag = False
+                    break
+
+        if delFlag:
+            RemoveFile(z2)
+        else:
+            print('Do not know which to delete: {0}, {1}'.format(z1, z2))
+
+    for k in BMS2ZIP:
+        for i in range(len(BMS2ZIP[k])):
+            for j in range(i):
+                CheckDuplicate(BMS2ZIP[k][i], BMS2ZIP[k][j])
+
+    return ret
+
+
 def CreateJSON():
 
     BMS2ZIP = {}
@@ -120,6 +170,11 @@ def CreateJSON():
                 BMS2ZIP[bmsHash] = []
 
             BMS2ZIP[bmsHash].append(zipCode)
+
+    # Hacky while loop
+    if RemoveDuplicate(BMS2ZIP, ZIP2BMS):
+        CreateJSON()
+        return
 
     with open('BMS2ZIP.json', 'w') as f:
         jstr = json.dumps(BMS2ZIP, sort_keys=True, indent=4)
