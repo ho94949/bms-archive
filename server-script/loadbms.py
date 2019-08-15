@@ -77,10 +77,7 @@ def ExtractZIPData(zipName):
     print('OK! [{0}] {1}'.format(zipJSON['artist'], zipJSON['title']))
 
 
-def main():
-    """Main Logic"""
-
-    # Generate default directories
+def GenerateDefaultDir():
     for dirname in [
             ZIP_FOLDER_NAME,
             EXTRACT_FOLDER_NAME,
@@ -92,15 +89,61 @@ def main():
         else:
             os.mkdir(dirname)
 
+
+def LoadNewBMS():
     for fileName in os.listdir(NEW_FOLDER_NAME):
-
         fileName = os.path.join(NEW_FOLDER_NAME, fileName)
-
         if IsZIPFile(fileName):
             try:
                 ExtractZIPData(fileName)
             except Exception:
                 traceback.print_exc()
+
+
+def CreateJSON():
+
+    BMS2ZIP = {}
+    ZIP2BMS = {}
+
+    for fileName in os.listdir(JSON_FOLDER_NAME):
+        fileName = os.path.join(JSON_FOLDER_NAME, fileName)
+        with open(fileName, 'r') as f:
+            jsonData = json.loads(f.read())
+
+        zipCode = jsonData['code']
+        ZIP2BMS[zipCode] = jsonData
+
+        for bms in jsonData['bms']:
+            bmsHash = 'BMS_' + bms['md5']
+
+            if bmsHash not in BMS2ZIP:
+                BMS2ZIP[bmsHash] = []
+
+            BMS2ZIP[bmsHash].append(zipCode)
+
+    with open('BMS2ZIP.json', 'w') as f:
+        jstr = json.dumps(BMS2ZIP, sort_keys=True, indent=4)
+        f.write(jstr + '\n')
+
+    with open('BMS2ZIP.mini.json', 'w') as f:
+        jstr = json.dumps(BMS2ZIP, ensure_ascii=False, separators=(',', ':'))
+        f.write(jstr + '\n')
+
+    with open('ZIP2BMS.json', 'w') as f:
+        jstr = json.dumps(ZIP2BMS, sort_keys=True, indent=4)
+        f.write(jstr + '\n')
+
+    with open('ZIP2BMS.mini.json', 'w') as f:
+        jstr = json.dumps(ZIP2BMS, ensure_ascii=False, separators=(',', ':'))
+        f.write(jstr + '\n')
+
+
+def main():
+    """Main Logic"""
+
+    GenerateDefaultDir()
+    LoadNewBMS()
+    CreateJSON()
 
 
 if __name__ == '__main__':

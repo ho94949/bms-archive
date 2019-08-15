@@ -142,3 +142,9 @@ server-script/json/
 server-script/new/
 server-script/zip/
 
+# server-script generated json
+
+server-script/BMS2ZIP.json
+server-script/BMS2ZIP.mini.json
+server-script/ZIP2BMS.json
+server-script/ZIP2BMS.mini.json
