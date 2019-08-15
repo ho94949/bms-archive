@@ -17,11 +17,11 @@ Every BMS files and ZIP files are handled with MD5 hash.
 Metadata consist of two files currently, and may be added:
 
 - `BMS2ZIP.json` located at [`/BMS2ZIP.json`](https://bms.kyouko.moe/BMS2ZIP.json)
-  - `BMS2ZIP.json` is directory mapping BMS file to list of ZIP files. Each zip file in list holds BMS file given as key. There may be two or more ZIP file corresponds to BMS file. Only one of them is up-to-date, usually the last one, but it is subject to change.
-- - `ZIP2BMS.json` located at [`/ZIP2BMS.json`](https://bms.kyouko.moe/ZIP2BMS.json)
-  - `ZIP2BMS.json` is dictionary mapping ZIP file to list of BMS files. Each list holds every hash of BMS in zip. There can be multiple BMS in single zip. (Which is natural, supporting various difficulty.)
+  - `BMS2ZIP.json` is `json` file mapping BMS file to list of ZIP files. Each zip file in list holds BMS file given as key. There may be two or more ZIP file corresponds to BMS file. Only one of them is up-to-date, usually the last one, but it is subject to change.
+- `ZIP2BMS.json` located at [`/ZIP2BMS.json`](https://bms.kyouko.moe/ZIP2BMS.json)
+  - `ZIP2BMS.json` is `json` holds data of artist and title of BMS files in single zip. BMS files are stored in field `bms`.
 
-We will going to support other `json` files, such as name and composer of the song of ZIP file, difficulty name of BMS file, deprecated zip file list, and so on.
+We will going to support other `json` files,  deprecated zip file list, and so on.
 
 ## Body
 

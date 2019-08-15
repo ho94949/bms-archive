@@ -45,6 +45,6 @@ Paused means we tried to gather sabun but failed on some and project was paused.
 
 # Documentation
 
-Can be seen at [Here](https://github.com/ho94949/bms-archive/blob/master/Documentation.md).
+Can be seen at [Here](https://github.com/ho94949/bms-archive/tree/master/Documentation).
 
 If you have any suggestion on song table, please send issue on this github repository.
