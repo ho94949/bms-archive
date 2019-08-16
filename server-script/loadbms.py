@@ -130,6 +130,7 @@ def RemoveDuplicate(BMS2ZIP, ZIP2BMS):
         # We want to delete z2
         if len(Files1) < len(Files2):
             Files1, Files2 = Files2, Files1
+            z1, z2 = z2, z1
 
         if len(Files1) > len(Files2):
             for h in Files2:
