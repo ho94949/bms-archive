@@ -141,6 +141,10 @@ server-script/extract/
 server-script/json/
 server-script/new/
 server-script/zip/
+server-script/normalizeExtract/
+server-script/minifyExtract/
+server-script/normal/
+server-script/minify/
 
 # server-script generated json
 

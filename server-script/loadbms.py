@@ -23,7 +23,7 @@ def GenerateDefaultDir():
             NORMALIZE_EXTRACT_FOLDER_NAME,
             MINIFY_EXTRACT_FOLDER_NAME,
             NORMALIZE_FOLDER_NAME,
-            MINIFY_EXTRACT_FOLDER_NAME,
+            MINIFY_FOLDER_NAME,
     ]:
         if os.path.exists(dirname):
             assert os.path.isdir(dirname), 'File "' + \
