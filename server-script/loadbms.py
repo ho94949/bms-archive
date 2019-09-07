@@ -33,9 +33,14 @@ def GenerateDefaultDir():
 
 
 def LoadNewBMS():
-    flist = os.listdir(ZIP_FOLDER_NAME) + os.listdir(NORMALIZE_FOLDER_NAME) + os.listdir(MINIFY_FOLDER_NAME)
-    counter = max(map(lambda s: int(os.path.splitext(s)[0]), flist))
-    print('Starting from: %d'%(counter+1))
+    flist = os.listdir(ZIP_FOLDER_NAME) + \
+        os.listdir(NORMALIZE_FOLDER_NAME) + os.listdir(MINIFY_FOLDER_NAME)
+    ff = list(map(lambda s: int(os.path.splitext(s)[0]), flist))
+    if ff == 0:
+        counter = 0
+    else:
+        counter = max(ff)
+    print('Starting from: %d' % (counter+1))
 
     for fileName in os.listdir(NEW_FOLDER_NAME):
         fileName = os.path.join(NEW_FOLDER_NAME, fileName)
@@ -47,13 +52,13 @@ def LoadNewBMS():
                     NORMALIZE_FOLDER_NAME, '%06d.zip' % counter)
                 minifile = os.path.join(
                     MINIFY_FOLDER_NAME, '%06d.zip' % counter)
-                infofile = os.path.join(JSON_FOLDER_NAME, '%06d.json' % counter)
+                infofile = os.path.join(
+                    JSON_FOLDER_NAME, '%06d.json' % counter)
                 res = bmspackage.MakePackage(
                     fileName, normalfile, minifile, infofile)
                 if res:
                     sys.stderr.write('Error on %06d\n' % counter)
                     sys.stderr.flush()
-
 
                     print('\n')
                     print('===')
