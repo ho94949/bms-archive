@@ -4,7 +4,7 @@ import hashlib
 import zipfile
 import shutil
 import subprocess
-
+from PIL import Image
 
 def MD5(filename):
     """Calculate MD5 value of given file."""
@@ -63,11 +63,21 @@ def NormalizeWav(filename, destfilename):
     if ext.lower() == '.ogg':
         shutil.copyfile(filename, destfilename)
     else:
-        shutil.copyfile(filename, os.path.join(destdir, 'a.wav'))
-        subprocess.check_call(['ffmpeg', '-i', 'a.wav', '-acodec', 'flac', 'a.ogg'], cwd=destdir,
-                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        os.rename(os.path.join(destdir, 'a.ogg'), destfilename)
-        os.remove(os.path.join(destdir, 'a.wav'))
+        shutil.copyfile(filename, os.path.join(
+            destdir, '____bms_archive_convert____.wav'))
+
+        subprocess.check_call(['ffmpeg', '-i', '____bms_archive_convert____.wav', '-acodec', 'flac', '____bms_archive_convert____.ogg', '-y'], cwd=destdir,
+                              stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
+
+        os.rename(os.path.join(
+            destdir, '____bms_archive_convert____.ogg'), destfilename)
+
+        os.remove(os.path.join(destdir, '____bms_archive_convert____.wav'))
+
+def NormalizeBmp(filename, destfilename):
+    x = Image.open(filename)
+    x.save(destfilename, 'png')
+
 
 def CompressFolder(src, dst):
     zf = zipfile.ZipFile(dst, "w", zipfile.ZIP_DEFLATED)

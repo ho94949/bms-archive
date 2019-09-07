@@ -5,6 +5,7 @@ import shutil
 from config import *
 import json
 
+
 def MakePackage(zipName, normalizedName, minifiedName, infoFile):
 
     ErrorList = []
@@ -19,6 +20,7 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         if not os.path.isdir(d):
             os.mkdir(d)
 
+    DIRMD5 = bmsutil.MD5(zipName)
     extractDir = bmsutil.ExtractZIP(zipName, EXTRACT_FOLDER_NAME)
 
     BMSList = []
@@ -71,22 +73,25 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         else:
             ErrorList.append('WAV File not found: ' + f)
 
-    for f in BMPList:
+    for f in BMPList | StageList:
         if f == '':
             continue
         ff = os.path.join(extractDir, f)
-        if os.path.exists(ff) and not os.path.isdir(ff):
-            shutil.copy(ff, os.path.join(normalizeDir, f))
-        else:
-            ErrorList.append('BMP file not found: ' + f)
 
-    for f in StageList:
-        if f == '':
-            continue
-        ff = os.path.join(extractDir, f)
-        if os.path.exists(ff) and not os.path.isdir(ff):
-            shutil.copy(ff, os.path.join(normalizeDir, f))
-            shutil.copy(ff, os.path.join(minifyDir, f))
+        name, ext = os.path.splitext(ff)
+        
+        fileSearchOrder = [ff, name + '.bmp', name + '.png', name+'.jpg']
+        
+        for q in fileSearchOrder:
+            if os.path.exists(q) and not os.path.isdir(q):
+                namef, _ = os.path.splitext(f)
+                _, ext = os.path.splitext(q)
+
+                if ext == '.bmp':
+                    bmsutil.NormalizeBmp(q, os.path.join(normalizeDir, namef+'.png'))
+                else:
+                    shutil.copy(q, os.path.join(normalizeDir, namef+ext))
+                break
         else:
             ErrorList.append('BMP file not found: ' + f)
 
@@ -107,7 +112,8 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         if b.artist:
             ArtistList.append(b.artist)
 
-        bi = {'title': b.title, 'subtitle': b.subtitle, 'artist': b.artist, 'subartist': b.subartist, 'md5': b.md5}
+        bi = {'title': b.title, 'subtitle': b.subtitle,
+              'artist': b.artist, 'subartist': b.subartist, 'md5': b.md5}
         bmsinfo['bms'].append(bi)
 
     try:
@@ -116,6 +122,14 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
             Title = None
     except IndexError:
         Title = None
+
+    prevdata = {}
+    if os.path.exists(os.path.join('prevjson', 'ZIP_' + DIRMD5 + '.json')):
+        with  open(os.path.join('prevjson', 'ZIP_' + DIRMD5 + '.json')) as f:
+            prevdata = json.loads(f.read())
+
+    if Title is None:
+        Title = prevdata.pop('title', None)
 
     if Title is None:
         ErrorList.append('Title not set')
@@ -128,15 +142,19 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         Artist = None
 
     if Artist is None:
+        Artist = prevdata.pop('artist', None)
+
+    if Artist is None:
         ErrorList.append('Artist not set')
 
     bmsinfo['title'] = Title
     bmsinfo['trtist'] = Artist
 
     with open(infoFile, 'w') as f:
-        f.write(json.dumps(bmsinfo,ensure_ascii=False))
+        f.write(json.dumps(bmsinfo, ensure_ascii=False))
         f.write('\n')
-    
+
+
     print('OK!', Title, Artist)
 
     return ErrorList

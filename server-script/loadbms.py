@@ -70,7 +70,12 @@ def LoadNewBMS():
 
                 os.rename(fileName, destfile)
             except Exception:
+                print('\n')
+                print('===')
+                print('Critical Error on %06d' % counter)
                 traceback.print_exc()
+                print('===')
+                print('\n')
 
 
 def main():

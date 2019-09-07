@@ -145,6 +145,7 @@ server-script/normalizeExtract/
 server-script/minifyExtract/
 server-script/normal/
 server-script/minify/
+server-script/prevjson/
 
 # server-script generated json
 
