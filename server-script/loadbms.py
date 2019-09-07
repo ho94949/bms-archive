@@ -36,7 +36,7 @@ def LoadNewBMS():
     flist = os.listdir(ZIP_FOLDER_NAME) + \
         os.listdir(NORMALIZE_FOLDER_NAME) + os.listdir(MINIFY_FOLDER_NAME)
     ff = list(map(lambda s: int(os.path.splitext(s)[0]), flist))
-    if ff == []]:
+    if ff == []:
         counter = 0
     else:
         counter = max(ff)
