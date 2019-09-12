@@ -12,7 +12,7 @@ import bmspackage
 from bmsutil import *
 from config import *
 from bmsparser import BMS
-
+from bmsdata import *
 
 def GenerateDefaultDir():
     for dirname in [
@@ -24,12 +24,71 @@ def GenerateDefaultDir():
             MINIFY_EXTRACT_FOLDER_NAME,
             NORMALIZE_FOLDER_NAME,
             MINIFY_FOLDER_NAME,
+            JSON_EXTRACT_FOLDER_NAME,
     ]:
         if os.path.exists(dirname):
             assert os.path.isdir(dirname), 'File "' + \
                 dirname + '" is not a directory.'
         else:
             os.mkdir(dirname)
+
+JSON_CURRENT_VER = 2
+
+def LoadJSON(f):
+    ed = ExtractZIP(f, JSON_EXTRACT_FOLDER_NAME)
+
+    lf = ListFolder(ed)
+    lf.pop('isdir', None)
+    lf['bms'] = []
+
+    for k in lf['content']:
+        if IsBMSFile(k):
+            bd = LoadBMSFile(os.path.join(ed, k))
+            jf = BMSData2JSON(bd)
+            jf.pop('bmp', None)
+            jf.pop('wav', None)
+            lf['bms'].append(jf)
+            
+    lf['ver'] = JSON_CURRENT_VER
+
+    shutil.rmtree(ed)
+    return lf
+
+
+def ReloadJSON(force=False):
+
+    for z in sorted(os.listdir(NORMALIZE_FOLDER_NAME)):
+        print('Making JSON for ' + z)
+        name, ext = os.path.splitext(z)
+        if ext != '.zip':
+            continue
+
+        dat = {}
+
+        jsonFile = os.path.join(JSON_FOLDER_NAME, name + '.json')
+        try:
+            with open(jsonFile, 'r') as f:
+                dat = json.loads(f.read())
+        except Exception:
+            pass
+
+
+        if (not force) and ('ver' in dat and dat['ver'] == JSON_CURRENT_VER):
+            continue
+
+        try:
+            dat = LoadJSON(os.path.join(NORMALIZE_FOLDER_NAME, z))
+            with open(jsonFile, 'w') as f:
+                f.write(json.dumps(dat, ensure_ascii=False,
+                                    sort_keys=True, indent=2))
+                f.write('\n')
+        except Exception:
+            print('\n')
+            print('===')
+            print('Error on making JSON on ' + z)
+            traceback.print_exc()
+            print('===')
+            print('\n')
 
 
 def LoadNewBMS():
@@ -81,6 +140,7 @@ def LoadNewBMS():
 def main():
     GenerateDefaultDir()
     LoadNewBMS()
+    #ReloadJSON()
 
 
 if __name__ == '__main__':

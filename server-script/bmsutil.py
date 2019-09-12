@@ -88,3 +88,29 @@ def CompressFolder(src, dst):
             arcname = absname[len(abs_src) + 1:]
             zf.write(absname, arcname)
     zf.close()
+
+def ListFolder(src):
+    ret = {'isdir': True, 'content': {}}
+    abs_src = os.path.normpath(os.path.abspath(src))
+    for dirname, subdirs, files in os.walk(src):
+        for filename in files:
+            absname = os.path.normpath(os.path.abspath(os.path.join(dirname, filename)))
+            orgdir = absname[len(abs_src)+1:].split(os.sep)
+
+            md5v = MD5(absname)
+            size = os.path.getsize(absname)
+            ptr = ret
+            filetype = subprocess.check_output(['file', '-b', absname])
+            filetype = filetype.decode('utf-8')
+            for i in orgdir[:-1]:
+                if i not in ptr['content']: ptr['content'][i] = {'isdir': True, 'content': {}}
+                ptr = ptr['content'][i]
+
+            ptr['content'][orgdir[-1]] = {
+                'isdir': False,
+                'md5': md5v,
+                'size': size,
+                'file': filetype,
+            }
+
+    return ret

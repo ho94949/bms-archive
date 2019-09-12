@@ -112,9 +112,7 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         if b.artist:
             ArtistList.append(b.artist)
 
-        bi = {'title': b.title, 'subtitle': b.subtitle,
-              'artist': b.artist, 'subartist': b.subartist, 'md5': b.md5}
-        bmsinfo['bms'].append(bi)
+        bmsinfo['bms'].append(bmsdata.BMSData2JSON(b))
 
     try:
         Title = TitleList[0]

@@ -23,6 +23,19 @@ class BMSData:
     bmp: List[str] = field(default_factory=lambda: [])
 
 
+def BMSData2JSON(dat):
+    ret = {}
+    ret['md5'] = dat.md5
+    ret['encoding'] = dat.encoding
+    ret['title'] = dat.title
+    ret['subtitle'] = dat.subtitle
+    ret['artist'] = dat.artist
+    ret['subartist'] = dat.subartist
+    ret['wav'] = dat.wav
+    ret['bmp'] = dat.bmp
+    return ret
+
+
 class UnknownEncodingError(Exception):
     """Encoding of BMS file is not known"""
     pass
@@ -159,8 +172,9 @@ def AfterParse(dat):
             dat.title = dat.subtitle
             dat.subtitle = None
 
-    dat.wav=sorted(set(dat.wav))
-    dat.bmp=sorted(set(dat.bmp))
+    dat.wav = sorted(set(dat.wav))
+    dat.bmp = sorted(set(dat.bmp))
+
 
 def ParseBMSFile(dat):
     for line in re.split('\r\n|\n|\r', dat.value):
@@ -186,4 +200,3 @@ def LoadBMSFile(fileName):
     ParseBMSFile(dat)
 
     return dat
-
