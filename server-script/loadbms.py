@@ -14,6 +14,7 @@ from config import *
 from bmsparser import BMS
 from bmsdata import *
 
+
 def GenerateDefaultDir():
     for dirname in [
             ZIP_FOLDER_NAME,
@@ -32,7 +33,9 @@ def GenerateDefaultDir():
         else:
             os.mkdir(dirname)
 
+
 JSON_CURRENT_VER = 2
+
 
 def LoadJSON(f):
     ed = ExtractZIP(f, JSON_EXTRACT_FOLDER_NAME)
@@ -48,7 +51,7 @@ def LoadJSON(f):
             jf.pop('bmp', None)
             jf.pop('wav', None)
             lf['bms'].append(jf)
-            
+
     lf['ver'] = JSON_CURRENT_VER
 
     shutil.rmtree(ed)
@@ -72,7 +75,6 @@ def ReloadJSON(force=False):
         except Exception:
             pass
 
-
         if (not force) and ('ver' in dat and dat['ver'] == JSON_CURRENT_VER):
             continue
 
@@ -80,7 +82,7 @@ def ReloadJSON(force=False):
             dat = LoadJSON(os.path.join(NORMALIZE_FOLDER_NAME, z))
             with open(jsonFile, 'w') as f:
                 f.write(json.dumps(dat, ensure_ascii=False,
-                                    sort_keys=True, indent=2))
+                                   sort_keys=True, indent=2))
                 f.write('\n')
         except Exception:
             print('\n')
@@ -137,10 +139,37 @@ def LoadNewBMS():
                 print('\n')
 
 
+def MakeJSON():
+    ZIP2BMS = {}
+    BMS2ZIP = {}
+    for f in os.listdir(JSON_FOLDER_NAME):
+        name, ext = os.path.splitext(f)
+        if ext != '.json':
+            continue
+        j = json.loads(open(os.path.join(JSON_FOLDER_NAME,f)).read())
+        ZIP2BMS[name] = {'title': j['title'], 'artist': j['artist'], 'bms': []}
+        for k in j['bms']:
+            K = k['md5']
+            k.pop('wav', None)
+            k.pop('bmp', None)
+            Z = name
+            BMS2ZIP[K] = Z
+            ZIP2BMS[Z]['bms'].append(k)
+
+    with open('ZIP2BMS.json', 'w') as f:
+        f.write(json.dumps(ZIP2BMS, sort_keys=True, indent=2, ensure_ascii=False))
+        f.write('\n')
+
+    with open('BMS2ZIP.json', 'w') as f:
+        f.write(json.dumps(BMS2ZIP, sort_keys=True, indent=2, ensure_ascii=False))
+        f.write('\n')
+
+
 def main():
     GenerateDefaultDir()
     LoadNewBMS()
-    #ReloadJSON()
+    # ReloadJSON()
+    MakeJSON()
 
 
 if __name__ == '__main__':

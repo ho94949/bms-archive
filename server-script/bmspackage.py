@@ -79,16 +79,17 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         ff = os.path.join(extractDir, f)
 
         name, ext = os.path.splitext(ff)
-        
+
         fileSearchOrder = [ff, name + '.bmp', name + '.png', name+'.jpg']
-        
+
         for q in fileSearchOrder:
             if os.path.exists(q) and not os.path.isdir(q):
                 namef, _ = os.path.splitext(f)
                 _, ext = os.path.splitext(q)
 
                 if ext == '.bmp':
-                    bmsutil.NormalizeBmp(q, os.path.join(normalizeDir, namef+'.png'))
+                    bmsutil.NormalizeBmp(q, os.path.join(
+                        normalizeDir, namef+'.png'))
                 else:
                     shutil.copy(q, os.path.join(normalizeDir, namef+ext))
                 break
@@ -123,7 +124,7 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
 
     prevdata = {}
     if os.path.exists(os.path.join('prevjson', 'ZIP_' + DIRMD5 + '.json')):
-        with  open(os.path.join('prevjson', 'ZIP_' + DIRMD5 + '.json')) as f:
+        with open(os.path.join('prevjson', 'ZIP_' + DIRMD5 + '.json')) as f:
             prevdata = json.loads(f.read())
 
     if Title is None:
@@ -146,12 +147,11 @@ def MakePackage(zipName, normalizedName, minifiedName, infoFile):
         ErrorList.append('Artist not set')
 
     bmsinfo['title'] = Title
-    bmsinfo['trtist'] = Artist
+    bmsinfo['artist'] = Artist
 
     with open(infoFile, 'w') as f:
-        f.write(json.dumps(bmsinfo, ensure_ascii=False))
+        f.write(json.dumps(bmsinfo, ensure_ascii=False, indent=2, sort_keys=True))
         f.write('\n')
-
 
     print('OK!', Title, Artist)
 
