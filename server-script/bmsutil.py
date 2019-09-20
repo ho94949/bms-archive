@@ -61,6 +61,9 @@ def NormalizeWav(filename, destfilename):
 
     destdir = os.path.abspath(os.path.dirname(destfilename))
 
+    if not os.path.isdir(destdir):
+        os.mkdir(destdir)
+
     shutil.copyfile(filename, os.path.join(
         destdir, '____bms_archive_convert____' + ext))
 

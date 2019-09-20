@@ -42,7 +42,7 @@ class UnknownEncodingError(Exception):
 
 
 def AutoDecode(raw):
-    EncodingList = ['ascii', 'cp932', 'utf-8', 'cp949']
+    EncodingList = ['ascii', 'cp932', 'shift_jisx0213', 'utf-8', 'cp949']
     for e in EncodingList:
         try:
             return (e, raw.decode(e))
