@@ -14,7 +14,7 @@ download_path = 'Songs'
 bms2zip = json.loads(get(bms2zip_url))
 zip2bms = json.loads(get(zip2bms_url))
 normallist = []
-for normallist_url in ['https://lite.stellabms.xyz/score.json', 'https://stellabms.xyz/score.json']:
+for normallist_url in ['http://www.ribbit.xyz/bms/tables/normal_body.json', 'https://lite.stellabms.xyz/score.json', 'https://stellabms.xyz/score.json']: # change this for songs
 	normallist += json.loads(get(normallist_url))
 normallist.reverse()
 
@@ -31,12 +31,13 @@ def Do():
 			return
 		song = normallist.pop()
 		lock.release()
-		bms = 'BMS_' + song['md5']
+		bms = song['md5']
 		try:
-			filename = download_path + '/' + bms2zip[bms][-1]
-			tmp_url = download_url + bms2zip[bms][-1] + '.zip'
+			filename = download_path + '/' + bms2zip[bms]
+			tmp_url = download_url + bms2zip[bms] + '.zip'
 		except KeyError:
 			print('No bms in server :', song)
+			continue
 		if os.path.exists(filename):
 			print(song['title'], 'exists')
 			continue
@@ -50,6 +51,6 @@ def Do():
 			zip_ref.extractall(filename)
 		print('\033[92m', song['title'], 'extract finish\033[00m')
 
-th = [threading.Thread(target = Do, daemon = True) for _ in range(8)]
+th = [threading.Thread(target = Do, daemon = True) for _ in range(16)]
 for t in th: t.start()
 for t in th: t.join()
